@@ -1,0 +1,11 @@
+[
+  { "id": 1, "name": "Test 1", "releaseYear": 2018, "duration": 90 },
+  { "id": 2, "name": "Test 2", "releaseYear": 2020, "duration": 70 },
+  { "id": 3, "name": "Avengers", "releaseYear": 2012, "duration": 70 },
+  { "id": 4, "name": "Test 4", "releaseYear": 2023, "duration": 90 },
+  { "id": 5, "name": "Monkey Man", "releaseYear": 2024, "duration": 118 },
+  { "id": 6, "name": "Test 7", "releaseYear": 2022, "duration": 110 },
+  { "id": 7, "name": "Test 8", "releaseYear": 2026, "duration": 100 },
+  { "id": 8, "name": "Avengers-Endgame", "releaseYear": 2019, "duration": 180 },
+  { "id": 9, "name": "IT", "releaseYear": 2012, "duration": 70 }
+]
