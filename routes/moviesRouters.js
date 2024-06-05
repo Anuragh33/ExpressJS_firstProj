@@ -12,8 +12,6 @@ const {
 
 const router = express.Router()
 
-router.param('id', checkId)
-
 router.route('/').get(getAllMovies).post(validateBody, createMovie)
 
 router
