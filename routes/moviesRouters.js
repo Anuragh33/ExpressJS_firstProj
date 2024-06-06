@@ -12,7 +12,7 @@ const {
 
 const router = express.Router()
 
-router.route('/').get(getAllMovies).post(validateBody, createMovie)
+router.route('/').get(getAllMovies).post(createMovie)
 
 router
   .route(`/:id`)
