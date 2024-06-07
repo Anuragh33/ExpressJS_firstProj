@@ -9,7 +9,32 @@ const errorMessage = (err, res) => {
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const movies = await Movie.find()
+    const excludeFields = ['sort', 'page', 'limit', 'fileds']
+
+    const queryObj = { ...req.query }
+
+    excludeFields.forEach((el) => delete queryObj[el])
+
+    //Advance Filtering (greater than/ less than/ greater than equal to/ less than equal to)
+
+    let queryStr = JSON.stringify(queryObj)
+
+    const regex = /\b(gte|gt|lte|lt)\b/g
+
+    queryStr = queryStr.replace(regex, (match) => `$${match}`)
+
+    const queryObj1 = JSON.parse(queryStr)
+
+    //Sorting with one or more conditions
+
+    let query = Movie.find(queryObj1)
+
+    const sortBy = req.query.sort.split(',').join(' ')
+
+    req.query.sort ? query.sort(sortBy) : null
+
+    const movies = await query
+
     const totalMovies = movies.length
 
     res.status(200).json({
