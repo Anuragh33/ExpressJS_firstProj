@@ -6,11 +6,12 @@ const {
   updateMovieById,
   createMovie,
   deleteMovieById,
-  checkId,
-  validateBody,
+  getHighestRated,
 } = require('../controllers/moviesController')
 
 const router = express.Router()
+
+router.route('/highest-rated').get(getHighestRated, getAllMovies)
 
 router.route('/').get(getAllMovies).post(createMovie)
 

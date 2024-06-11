@@ -7,12 +7,17 @@ const errorMessage = (err, res) => {
   })
 }
 
+exports.getHighestRated = (req, res, next) => {
+  req.query.limit = '5'
+  req.query.sort = '-ratings'
+  req.query.fields = '-createdAt -coverImage -__v -releaseDate'
+  next()
+}
+
 exports.getAllMovies = async (req, res) => {
   try {
-    const excludeFields = ['sort', 'page', 'limit', 'fileds']
-
+    const excludeFields = ['sort', 'page', 'limit', 'fields']
     const queryObj = { ...req.query }
-
     excludeFields.forEach((el) => delete queryObj[el])
 
     //Advance Filtering (greater than/ less than/ greater than equal to/ less than equal to)
@@ -29,9 +34,28 @@ exports.getAllMovies = async (req, res) => {
 
     let query = Movie.find(queryObj1)
 
-    const sortBy = req.query.sort.split(',').join(' ')
+    req.query.sort
+      ? query.sort(req.query.sort.split(',').join(' '))
+      : query.sort('-name')
 
-    req.query.sort ? query.sort(sortBy) : null
+    //Limiting Fields
+
+    req.query.fields
+      ? query.select(req.query.fields.split(',').join(' '))
+      : query.select('-__v')
+
+    //Pagination
+
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 5
+    const skip = (page - 1) * limit
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const moviesCount = await Movie.countDocuments()
+      if (skip >= moviesCount)
+        throw new Error(' There are no records to display!!')
+    }
 
     const movies = await query
 
