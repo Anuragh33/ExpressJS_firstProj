@@ -1,3 +1,4 @@
+const Apifeatures = require('../Utilities/APIFeatures')
 const Movie = require('../Model/movieModel')
 
 const errorMessage = (err, res) => {
@@ -16,55 +17,63 @@ exports.getHighestRated = (req, res, next) => {
 
 exports.getAllMovies = async (req, res) => {
   try {
-    const excludeFields = ['sort', 'page', 'limit', 'fields']
-    const queryObj = { ...req.query }
-    excludeFields.forEach((el) => delete queryObj[el])
+    const features = new Apifeatures(Movie.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .pagination()
 
-    //Advance Filtering (greater than/ less than/ greater than equal to/ less than equal to)
+    let movies = await features.query
 
-    let queryStr = JSON.stringify(queryObj)
+    // const excludeFields = ['sort', 'page', 'limit', 'fields']
+    // const queryObj = { ...req.query }
+    // excludeFields.forEach((el) => delete queryObj[el])
 
-    const regex = /\b(gte|gt|lte|lt)\b/g
+    // //Advance Filtering (greater than/ less than/ greater than equal to/ less than equal to)
 
-    queryStr = queryStr.replace(regex, (match) => `$${match}`)
+    // let queryStr = JSON.stringify(queryObj)
 
-    const queryObj1 = JSON.parse(queryStr)
+    // const regex = /\b(gte|gt|lte|lt)\b/g
 
-    //Sorting with one or more conditions
+    // queryStr = queryStr.replace(regex, (match) => `$${match}`)
 
-    let query = Movie.find(queryObj1)
+    // const queryObj1 = JSON.parse(queryStr)
 
-    req.query.sort
-      ? query.sort(req.query.sort.split(',').join(' '))
-      : query.sort('-name')
+    // let query = Movie.find(queryObj1)
 
-    //Limiting Fields
+    // //Sorting with one or more conditions
 
-    req.query.fields
-      ? query.select(req.query.fields.split(',').join(' '))
-      : query.select('-__v')
+    // req.query.sort
+    //   ? query.sort(req.query.sort.split(',').join(' '))
+    //   : query.sort('-name')
 
-    //Pagination
+    // //Limiting Fields
 
-    const page = +req.query.page || 1
-    const limit = +req.query.limit || 5
-    const skip = (page - 1) * limit
-    query = query.skip(skip).limit(limit)
+    // req.query.fields
+    //   ? query.select(req.query.fields.split(',').join(' '))
+    //   : query.select('-__v')
 
-    if (req.query.page) {
-      const moviesCount = await Movie.countDocuments()
-      if (skip >= moviesCount)
-        throw new Error(' There are no records to display!!')
-    }
+    // //Pagination
 
-    const movies = await query
+    // const page = +req.query.page || 1
+    // const limit = +req.query.limit || 5
+    // const skip = (page - 1) * limit
+    // query = query.skip(skip).limit(limit)
 
-    const totalMovies = movies.length
+    // if (req.query.page) {
+    //   const moviesCount = await Movie.countDocuments()
+    //   if (skip >= moviesCount)
+    //     throw new Error(' There are no records to display!!')
+    // }
 
-    res.status(200).json({
+    // const movies = await query
+
+    const totalMovies = res.status(200).json({
       status: 'Success',
-      count: totalMovies,
-      data: movies,
+      length: movies.length,
+      data: {
+        movies,
+      },
     })
   } catch (err) {
     errorMessage(err, res)
