@@ -40,7 +40,7 @@ class Apifeatures {
 
   pagination() {
     const page = +this.queryStr.page || 1
-    const limit = +this.queryStr.limit || 8
+    const limit = +this.queryStr.limit || this.query
     const skip = (page - 1) * limit
     this.query = this.query.skip(skip).limit(limit)
 
