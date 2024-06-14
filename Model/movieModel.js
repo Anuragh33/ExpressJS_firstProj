@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const fs = require('fs')
 
 const movieSchema = new mongoose.Schema(
   {
@@ -54,6 +55,9 @@ const movieSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'Price is required field!!'],
     },
+    createdBy: {
+      type: String,
+    },
   },
   {
     toJSON: {
@@ -70,7 +74,16 @@ movieSchema.virtual('durationInHours').get(function () {
 })
 
 movieSchema.pre('save', function (next) {
-  console.log(this)
+  this.createdBy = 'Anuragh'
+  next()
+})
+
+movieSchema.post('save', function (doc, next) {
+  const content = `A new movie ${doc.name} is created by ${doc.createdBy} successfully\n`
+
+  fs.writeFileSync('../Log/log.txt', content, { flag: 'a' }, (err) =>
+    console.log(err.message)
+  )
   next()
 })
 
