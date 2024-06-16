@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
+const validator = require('validator')
 
 const movieSchema = new mongoose.Schema(
   {
@@ -7,7 +8,10 @@ const movieSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Name is required field!!'],
       unique: true,
+      maxlength: [40, 'A Name should have a maximum of {MAXLENGTH} characters'],
+      minlength: [5, `A Name should have a minimum of {MINLENGTH} characters`],
       trim: true,
+      validate: [validator.isAlpha, 'Name should only contain alphabets'],
     },
     description: {
       type: String,
@@ -20,6 +24,13 @@ const movieSchema = new mongoose.Schema(
     },
     ratings: {
       type: Number,
+      validate: {
+        validator: function (value) {
+          return value >= 1 && value < 10
+        },
+        message:
+          'The rating must be between 1 and 10. The rating for this movie is {VALUE}',
+      },
     },
     totalRatings: {
       type: Number,
@@ -38,6 +49,19 @@ const movieSchema = new mongoose.Schema(
     genres: {
       type: [String],
       required: [true, 'Genres is required field!!'],
+      enum: {
+        values: [
+          'Action',
+          'Adventure',
+          'Sci-Fi',
+          'Thriller',
+          'Crime',
+          'Drama',
+          'Comedy',
+          'Romance',
+        ],
+        message: "The genre dosen't exist!!",
+      },
     },
     directors: {
       type: [String],
@@ -79,11 +103,21 @@ movieSchema.pre('save', function (next) {
 })
 
 movieSchema.post('save', function (doc, next) {
-  const content = `A new movie ${doc.name} is created by ${doc.createdBy} successfully\n`
+  const content = `A new movie ${doc.name} is created by ${doc.createdBy} successfully \n`
 
-  fs.writeFileSync('../Log/log.txt', content, { flag: 'a' }, (err) =>
+  fs.writeFileSync('./Log/log.txt', content, { flag: 'a' }, (err) =>
     console.log(err.message)
   )
+  next()
+})
+
+movieSchema.pre(/^find/, function (next) {
+  this.find({ releaseDate: { $lte: Date.now() } })
+  next()
+})
+
+movieSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { releaseDate: { $lte: new Date() } } })
   next()
 })
 
