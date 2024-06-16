@@ -1,22 +1,19 @@
 const express = require('express')
-const app = express()
 const morgan = require('morgan')
+
 const moviesRouter = require('./routes/moviesRouters')
 
-const logger = function (req, res, next) {
-  console.log('The custom middleware is called.....')
-  next()
-}
-
+const app = express()
 app.use(express.json())
-app.use(morgan('dev'))
 app.use(express.static('./public'))
-app.use(logger)
-app.use((req, res, next) => {
-  req.requestedAt = new Date().toISOString()
-  next()
-})
 
 app.use('/v1/movies/', moviesRouter)
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'Failed',
+    message: `Can't find the ${req.originalUrl} in the server.Please try again!`,
+  })
+  next()
+})
 
 module.exports = app
