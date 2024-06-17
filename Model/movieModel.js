@@ -11,7 +11,7 @@ const movieSchema = new mongoose.Schema(
       maxlength: [40, 'A Name should have a maximum of {MAXLENGTH} characters'],
       minlength: [5, `A Name should have a minimum of {MINLENGTH} characters`],
       trim: true,
-      validate: [validator.isAlpha, 'Name should only contain alphabets'],
+      //validate: [validator.isAlpha, 'Name should only contain alphabets'],
     },
     description: {
       type: String,
