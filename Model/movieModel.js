@@ -29,7 +29,7 @@ const movieSchema = new mongoose.Schema(
           return value >= 1 && value < 10
         },
         message:
-          'The rating must be between 1 and 10. The rating for this movie is {VALUE}',
+          'The rating must be between 1 and 10. The rating you have given is {VALUE}',
       },
     },
     totalRatings: {
@@ -60,7 +60,7 @@ const movieSchema = new mongoose.Schema(
           'Comedy',
           'Romance',
         ],
-        message: "The genre dosen't exist!!",
+        message: "The genre you entered dosen't exist!!",
       },
     },
     directors: {

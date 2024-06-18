@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "export NODE_ENV=development& nodemon server.js",
+    "start_prod": "export NODE_ENV=production& nodemon server.js"
   },
   "author": "",
   "license": "ISC",
