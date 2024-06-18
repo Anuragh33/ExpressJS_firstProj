@@ -23,7 +23,7 @@ exports.getAllMovies = asyncErrorHandler(async (req, res, next) => {
     status: 'Success',
     length: movies.length,
     data: {
-      movies: movies,
+      movies,
     },
   })
 })
@@ -34,7 +34,7 @@ exports.createMovie = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     data: {
-      movie: movie,
+      movie,
     },
   })
 })
@@ -49,7 +49,7 @@ exports.getMovieById = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     data: {
-      movie: movieByID,
+      movieByID,
     },
   })
 })
@@ -67,7 +67,7 @@ exports.updateMovieById = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     data: {
-      movie: updateMovie,
+      updateMovie,
     },
   })
 })
@@ -83,7 +83,7 @@ exports.deleteMovieById = asyncErrorHandler(async (req, res, next) => {
     status: 'Success',
     message: 'The movie is deleted',
     data: {
-      movie: deleteMovie,
+      deleteMovie,
     },
   })
 })
