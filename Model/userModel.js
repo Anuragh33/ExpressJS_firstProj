@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const bcrypt = require('bcryptjs')
+//const argon2 = require('argon2')
 
 const userScheme = new mongoose.Schema({
   name: {
@@ -21,13 +23,33 @@ const userScheme = new mongoose.Schema({
     required: [true, 'Please enter a password to continue!!'],
     minlength: 8,
     maxlength: 20,
+    select: false,
   },
   confirmPassword: {
     type: String,
     required: [true, 'Please confirm your password!!'],
+    validate: {
+      validator: function (val) {
+        return val === this.password
+      },
+      message: 'Passwords need to match!!',
+    },
   },
 })
 
-const User = mongoose.Model('User', userScheme)
+userScheme.pre('save', async function (next) {
+  if (!this.isModified('password')) return next()
+
+  this.password = await bcrypt.hash(this.password, 12)
+
+  this.confirmPassword = undefined
+  next()
+})
+
+userScheme.methods.comparePasswordDB = async function (pwd, pwdDB) {
+  return await bcrypt.compare(pwd, pwdDB)
+}
+
+const User = mongoose.model('User', userScheme)
 
 module.exports = User

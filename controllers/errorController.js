@@ -40,6 +40,11 @@ const validationErrorHandler = (err) => {
   return new customError(message, 400)
 }
 
+const tokenExpiredError = (err) => {
+  const message = `${err.name}: Please sign-in again!!`
+  return new customError(message, 401)
+}
+
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500
   err.status = err.status || 'Error'
@@ -51,6 +56,8 @@ module.exports = (err, req, res, next) => {
     err.name === 'CastError' ? (err = castErrorHandler(err)) : null
     err.code = 11000 ? (err = duplicateKeyErrorHandler(err)) : null
     err.name === 'ValidationError' ? (err = validationErrorHandler(err)) : null
+
+    err.name === 'TokenExpiredError' ? (err = tokenExpiredError(err)) : null
 
     prodErrors(res, err)
   }
