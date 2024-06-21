@@ -8,18 +8,7 @@ const devErrors = (res, err) => {
     error: err,
   })
 }
-
-const prodErrors = (res, err) => {
-  err.isOperational
-    ? res.status(err.statusCode).json({
-        status: err.statusCode,
-        message: err.message,
-      })
-    : res.status(500).jsob({
-        status: 'Error',
-        message: 'Someting is wrong!! Please try again.',
-      })
-}
+///////////////////////////////////////////////////////////
 
 const castErrorHandler = (err) => {
   const message = `Invalid value to path ${err.path}: ${err.value}!`
@@ -41,8 +30,26 @@ const validationErrorHandler = (err) => {
 }
 
 const tokenExpiredError = (err) => {
-  const message = `${err.name}: Please sign-in again!!`
+  const message = `${err.name}: JWT Expired. Please login again!!`
   return new customError(message, 401)
+}
+
+const JsonWebTokenErrorHandler = (err) => {
+  const message =
+    'The JWT is incorrect. Please enter the correct JWT to proceed!!'
+  return new customError('messsage', 401)
+}
+
+const prodErrors = (res, err) => {
+  err.isOperational
+    ? res.status(err.statusCode).json({
+        status: err.statusCode,
+        message: err.message,
+      })
+    : res.status(500).jsob({
+        status: 'Error',
+        message: 'Someting is wrong!! Please try again.',
+      })
 }
 
 module.exports = (err, req, res, next) => {
@@ -58,6 +65,10 @@ module.exports = (err, req, res, next) => {
     err.name === 'ValidationError' ? (err = validationErrorHandler(err)) : null
 
     err.name === 'TokenExpiredError' ? (err = tokenExpiredError(err)) : null
+
+    err.name === 'JsonWebTokenError'
+      ? (err = JsonWebTokenErrorHandler(err))
+      : null
 
     prodErrors(res, err)
   }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 //const argon2 = require('argon2')
 
 const userScheme = new mongoose.Schema({
@@ -35,6 +36,20 @@ const userScheme = new mongoose.Schema({
       message: 'Passwords need to match!!',
     },
   },
+  passwordChangedAt: {
+    type: Date,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetTokenExpire: {
+    type: Date,
+  },
 })
 
 userScheme.pre('save', async function (next) {
@@ -48,6 +63,31 @@ userScheme.pre('save', async function (next) {
 
 userScheme.methods.comparePasswordDB = async function (pwd, pwdDB) {
   return await bcrypt.compare(pwd, pwdDB)
+}
+
+userScheme.methods.isPasswordChanged = (JWTTimestamp) => {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    )
+    return JWTTimestamp > changedTimestamp
+
+    return false
+  }
+}
+
+userScheme.methods.generateResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+
+  this.passwordResetTokenExpire = Date.now() + 10 * 60 * 1000
+
+  return resetToken
 }
 
 const User = mongoose.model('User', userScheme)

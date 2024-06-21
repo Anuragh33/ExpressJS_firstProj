@@ -29,6 +29,10 @@ router
   .route(`/:id`)
   .get(authController.protect, getMovieById)
   .patch(authController.protect, updateMovieById)
-  .delete(authController.protect, deleteMovieById)
+  .delete(
+    authController.protect,
+    authController.restrictRole('admin'),
+    deleteMovieById
+  )
 
 module.exports = router
