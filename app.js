@@ -1,5 +1,6 @@
 const express = require('express')
-const morgan = require('morgan')
+const rateLimiter = require('express-rate-limit')
+
 const moviesRouter = require('./routes/moviesRouters')
 const customError = require('./Utilities/customError')
 const errorController = require('./controllers/errorController')
@@ -7,6 +8,16 @@ const authRouter = require('./routes/authRouter')
 const userRouter = require('./routes/userRouter')
 
 const app = express()
+
+let limiter = rateLimiter({
+  max: 1000,
+  WindowMs: 3600 * 1000,
+  message:
+    'We have received too many requests from this IP. Please try after sometime!!',
+})
+
+app.use('/api', limiter)
+
 app.use(express.json())
 app.use(express.static('./public'))
 

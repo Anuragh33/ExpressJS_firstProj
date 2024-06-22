@@ -5,7 +5,7 @@ const customError = require('../Utilities/customError')
 const email = require('../Utilities/email')
 const crypto = require('crypto')
 
-const signToken = (name, email, id) => {
+const signToken = (id) => {
   return jwt.sign(
     {
       id: id,
@@ -17,12 +17,27 @@ const signToken = (name, email, id) => {
   )
 }
 
+const resCookie = (res, token) => {
+  const options = {
+    maxAge: process.env.LOGIN_EXPIRES,
+    httpOnly: true,
+  }
+
+  if (process.env.NODE_env === 'production') {
+    options.secure = true
+  }
+
+  res.cookie('jwt', token, options)
+}
+
 exports.signUp = asyncErrorHandler(async (req, res, next) => {
   const newUser = await User.create(req.body)
 
   const { name, email, _id } = newUser
 
   const token = signToken(name, email, _id)
+
+  resCookie(res, token)
 
   res.status(201).json({
     status: 'Success',

@@ -77,9 +77,9 @@ userScheme.methods.isPasswordChanged = function (JWTTimestamp) {
       10
     )
     return JWTTimestamp > changedTimestamp
-
-    return false
   }
+
+  return false
 }
 
 userScheme.methods.generateResetToken = function () {
@@ -94,6 +94,10 @@ userScheme.methods.generateResetToken = function () {
 
   return resetToken
 }
+
+userScheme.pre('find', async function () {
+  this.find({ active: { $ne: false } })
+})
 
 const User = mongoose.model('User', userScheme)
 
