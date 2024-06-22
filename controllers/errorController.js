@@ -3,9 +3,9 @@ const customError = require('../Utilities/customError')
 const devErrors = (res, err) => {
   res.status(err.statusCode).json({
     status: err.statusCode,
+    errorName: err.name,
     message: err.message,
     stackTrace: err.stack,
-    error: err,
   })
 }
 ///////////////////////////////////////////////////////////
@@ -35,8 +35,7 @@ const tokenExpiredError = (err) => {
 }
 
 const JsonWebTokenErrorHandler = (err) => {
-  const message =
-    'The JWT is incorrect. Please enter the correct JWT to proceed!!'
+  const message = 'The JWT is incorrect. Please login again to proceed!!'
   return new customError('messsage', 401)
 }
 
@@ -59,7 +58,6 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     devErrors(res, err)
   } else if (process.env.NODE_ENV === 'production') {
-    //let error = Object.create(err)
     err.name === 'CastError' ? (err = castErrorHandler(err)) : null
     err.code = 11000 ? (err = duplicateKeyErrorHandler(err)) : null
     err.name === 'ValidationError' ? (err = validationErrorHandler(err)) : null

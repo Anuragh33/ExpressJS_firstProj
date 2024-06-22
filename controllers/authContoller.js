@@ -1,17 +1,14 @@
-const express = require('express')
 const User = require('../Model/userModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
 const jwt = require('jsonwebtoken')
 const customError = require('../Utilities/customError')
-const util = require('util')
 const email = require('../Utilities/email')
+const crypto = require('crypto')
 
 const signToken = (name, email, id) => {
   return jwt.sign(
     {
-      name,
-      email,
-      id,
+      id: id,
     },
     process.env.SECRET_STR,
     {
@@ -75,6 +72,8 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
     token,
   })
 })
+
+///////////////////////////////////////////////////////
 
 exports.protect = asyncErrorHandler(async (req, res, next) => {
   const testToken = req.headers.authorization
@@ -153,7 +152,7 @@ exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
 
   const resetURL = `${req.protocol}://${req.get(
     'host'
-  )}/v1/users/passwordreset/${resetToken}`
+  )}/v1/auth/passwordreset/${resetToken}`
 
   const message = `We have recieved a request for password reset. Please click the link below to reset your pasword. \n\n${resetURL}\n\n The link will be expired within 10 minutes.`
 
@@ -179,6 +178,40 @@ exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
   }
 })
 
-exports.passwordReset = (req, res, next) => {
-  User.findOne({ passwordResetToken: req.params.token })
-}
+exports.passwordReset = asyncErrorHandler(async (req, res, next) => {
+  const token = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex')
+
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetTokenExpire: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    const err = new customError(
+      'The password reset token wasinvalid or  expired. Please try again!!',
+      400
+    )
+    return next(err)
+  }
+
+  user.password = req.body.password
+  user.confirmPassword = req.body.confirmPassword
+  user.passwordResetToken = undefined
+  user.passwordResetTokenExpire = undefined
+
+  user.passwordChangedAt = Date.now()
+
+  user.save()
+
+  const loginToken = signToken(user.name, user.email, user._id)
+
+  res.status(200).json({
+    status: 'Success',
+    message: 'Password has been reset successfully!!',
+    userLogged: `The logged in user is ${user.email} with an id ${user._id}`,
+    loginToken,
+  })
+})
