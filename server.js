@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 
 const mongoose = require('mongoose')
+//mongoose.Types.ObjectId.isValid('your id here')
 
 process.on('uncaughtException', (err) => {
   //console.log(`${err.name} : ${err.message}`)

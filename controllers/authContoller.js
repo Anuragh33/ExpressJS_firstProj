@@ -4,11 +4,14 @@ const jwt = require('jsonwebtoken')
 const customError = require('../Utilities/customError')
 const email = require('../Utilities/email')
 const crypto = require('crypto')
+const util = require('util')
 
-const signToken = (id) => {
+const signToken = (name, email, id) => {
   return jwt.sign(
     {
-      id: id,
+      name,
+      email,
+      id,
     },
     process.env.SECRET_STR,
     {
@@ -30,12 +33,14 @@ const resCookie = (res, token) => {
   res.cookie('jwt', token, options)
 }
 
+/////////////////////////////////////////////////////////////
+
 exports.signUp = asyncErrorHandler(async (req, res, next) => {
   const newUser = await User.create(req.body)
 
   const { name, email, _id } = newUser
 
-  const token = signToken(name, email, _id)
+  const token = signToken(name, email, id)
 
   resCookie(res, token)
 
@@ -48,6 +53,8 @@ exports.signUp = asyncErrorHandler(async (req, res, next) => {
     },
   })
 })
+
+/////////////////////////////////////////////////////////////
 
 exports.login = asyncErrorHandler(async (req, res, next) => {
   const email = req.body.email
@@ -91,29 +98,26 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 ///////////////////////////////////////////////////////
 
 exports.protect = asyncErrorHandler(async (req, res, next) => {
-  const testToken = req.headers.authorization
-
-  if (!testToken) {
-    const err = new customError('Please login to proceed!!', 400)
-    return next(err)
-  }
-
   let token
+  const testToken = req.headers.authorization
 
   if (testToken && testToken.startsWith('Bearer')) {
     token = testToken.split(' ')[1]
   }
 
   if (!token) {
-    const err = new customError('No Access!! login in first.', 401)
+    const err = new customError('Please login to proceed!!', 400)
     return next(err)
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET_STR)
+  const decodedToken = await util.promisify(jwt.verify)(
+    token,
+    process.env.SECRET_STR
+  )
+
+  //console.log(decodedToken)
 
   const user = await User.findById(decodedToken.id)
-
-  //console.log(user)
 
   if (!user) {
     const err = new customError(
@@ -137,6 +141,8 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
   next()
 })
 
+/////////////////////////////////////////////////////////////
+
 exports.restrictRole = (role) => {
   return (req, res, next) => {
     if (req.user.role !== role) {
@@ -149,6 +155,8 @@ exports.restrictRole = (role) => {
     next()
   }
 }
+
+/////////////////////////////////////////////////////////////
 
 exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email })
@@ -192,6 +200,8 @@ exports.forgotPassword = asyncErrorHandler(async (req, res, next) => {
     )
   }
 })
+
+/////////////////////////////////////////////////////////////
 
 exports.passwordReset = asyncErrorHandler(async (req, res, next) => {
   const token = crypto

@@ -27,14 +27,14 @@ const filterReqObject = (obj, ...fields) => {
 }
 
 exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id)
+  // const user = await User.findById(req.user.id)
 
-  if (user.role === 'user')
-    return next(
-      new customError(
-        'You do not have privilages to view the users. Contact the admin!!'
-      )
-    )
+  // if (user.role === 'user')
+  //   return next(
+  //     new customError(
+  //       'You do not have privilages to view the users. Contact the admin!!'
+  //     )
+  //   )
 
   const users = await User.find()
 
@@ -103,5 +103,6 @@ exports.deleteUser = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     message: 'The User deleted successfully!!',
+    user,
   })
 })

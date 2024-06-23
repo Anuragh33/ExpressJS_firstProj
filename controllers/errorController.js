@@ -5,20 +5,22 @@ const devErrors = (res, err) => {
     status: err.statusCode,
     errorName: err.name,
     message: err.message,
-    stackTrace: err.stack,
+    //stackTrace: err.stack,
+    err,
   })
 }
 ///////////////////////////////////////////////////////////
 
 const castErrorHandler = (err) => {
+  console.log(err)
   const message = `Invalid value to path ${err.path}: ${err.value}!`
-  //console.log(err)
 
   return new customError(message, 400)
 }
 
 const duplicateKeyErrorHandler = (err) => {
-  const message = `The entered value ${err.keyValue.name} already exist!!`
+  //console.log(err)
+  const message = `The entered value ${err.keyvalue} already exist!!`
   //console.log(err)
   return new customError(message, 400)
 }
