@@ -1,6 +1,9 @@
 const express = require('express')
 const rateLimiter = require('express-rate-limit')
 const helmet = require('helmet')
+const sanatize = require('express-mongo-sanitize')
+const xss = require('xss-clean')
+const hpp = require('hpp')
 
 const moviesRouter = require('./routes/moviesRouters')
 const customError = require('./Utilities/customError')
@@ -26,6 +29,22 @@ app.use(
     limit: '10kb',
   })
 )
+
+app.use(sanatize())
+app.use(xss())
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'genres',
+      'ratings',
+      'releaseYear',
+      'directors',
+      'actors',
+    ],
+  })
+)
+
 app.use(express.static('./public'))
 
 app.use('/v1/movies', moviesRouter)
