@@ -10,6 +10,7 @@ const customError = require('./Utilities/customError')
 const errorController = require('./controllers/errorController')
 const authRouter = require('./routes/authRouter')
 const userRouter = require('./routes/userRouter')
+const reviewRouter = require('./routes/reviewRouter')
 
 const app = express()
 
@@ -50,6 +51,7 @@ app.use(express.static('./public'))
 app.use('/v1/movies', moviesRouter)
 app.use('/v1/auth', authRouter)
 app.use('/v1/users', userRouter)
+app.use('/v1/review', reviewRouter)
 
 app.all('*', (req, res, next) => {
   const err = new customError(

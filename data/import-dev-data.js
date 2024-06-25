@@ -33,7 +33,7 @@ const importMovies = async () => {
     await Movies.create(movies)
     console.log('The data is imported successfully!!')
   } catch (err) {
-    console.log(err.message)
+    console.log(err)
   }
   process.exit()
 }

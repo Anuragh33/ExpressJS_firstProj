@@ -11,7 +11,43 @@
     "directors": ["David Twohy"],
     "coverImage": "Riddick-2013.jpg",
     "actors": ["Vin Diesel", "Karl Urban", "Katee Sackhoff"],
-    "price": 50
+    "price": 50,
+    "theaterLocation": {
+      "description": "Miami, USA",
+      "type": "Point",
+      "coordinates": [-80.185942, 25.774772],
+      "address": "301 Biscayne Blvd, Miami, FL 33132, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c2959",
+        "description": "Lummus Park Beach",
+        "type": "Point",
+        "coordinates": [-80.128473, 25.781842],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2958",
+        "description": "Islamorada",
+        "type": "Point",
+        "coordinates": [-80.647885, 24.909047],
+        "day": 2
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2957",
+        "description": "Sombrero Beach",
+        "type": "Point",
+        "coordinates": [-81.0784, 24.707496],
+        "day": 3
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2956",
+        "description": "West Key",
+        "type": "Point",
+        "coordinates": [-81.768719, 24.552242],
+        "day": 5
+      }
+    ]
   },
   {
     "releaseYear": 2013,
@@ -25,7 +61,37 @@
     "description": "A veteran pot dealer creates a fake family as part of his plan to move a huge shipment of weed into the U.S. from Mexico.",
     "duration": 110,
     "actors": ["Jason Sudeikis", "Jennifer Aniston", "Emma Roberts"],
-    "price": 47
+    "price": 47,
+
+    "theaterLocation": {
+      "description": "Banff, CAN",
+      "type": "Point",
+      "coordinates": [-115.570154, 51.178456],
+      "address": "224 Banff Ave, Banff, AB, Canada"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c2954",
+        "description": "Banff National Park",
+        "type": "Point",
+        "coordinates": [-116.214531, 51.417611],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2953",
+        "description": "Jasper National Park",
+        "type": "Point",
+        "coordinates": [-118.076152, 52.875223],
+        "day": 3
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2952",
+        "description": "Glacier National Park of Canada",
+        "type": "Point",
+        "coordinates": [-117.490309, 51.261937],
+        "day": 5
+      }
+    ]
   },
   {
     "releaseYear": 2014,
@@ -39,7 +105,29 @@
     "description": "Beatrice Prior, a teenager with a special mind, finds her life threatened when an authoritarian leader seeks to exterminate her kind in her effort to seize control of their divided society.",
     "duration": 117,
     "actors": ["Shailene Woodley", "Kate Winslet", "Zoe Kravitz"],
-    "price": 52
+    "price": 52,
+    "theaterLocation": {
+      "description": "Aspen, USA",
+      "type": "Point",
+      "coordinates": [-106.822318, 39.190872],
+      "address": "419 S Mill St, Aspen, CO 81611, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c295c",
+        "description": "Aspen Highlands",
+        "type": "Point",
+        "coordinates": [-106.855385, 39.182677],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c295b",
+        "description": "Beaver Creek",
+        "type": "Point",
+        "coordinates": [-106.516623, 39.60499],
+        "day": 2
+      }
+    ]
   },
   {
     "releaseYear": 2013,
@@ -53,7 +141,43 @@
     "description": "Set in the year 2154, where the very wealthy live on a man-made space station while the rest of the population resides on a ruined Earth, a man takes on a mission that could bring equality to the polarized worlds.",
     "duration": 109,
     "actors": ["Matt Damon", "Jodie Foster", "Sharlto Copley"],
-    "price": 65
+    "price": 65,
+    "theaterLocation": {
+      "description": "Las Vegas, USA",
+      "type": "Point",
+      "coordinates": [-115.172652, 36.110904],
+      "address": "3663 S Las Vegas Blvd, Las Vegas, NV 89109, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c2965",
+        "description": "Zion Canyon National Park",
+        "type": "Point",
+        "coordinates": [-112.987418, 37.198125],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2964",
+        "description": "Antelope Canyon",
+        "type": "Point",
+        "coordinates": [-111.376161, 36.86438],
+        "day": 4
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2963",
+        "description": "Grand Canyon National Park",
+        "type": "Point",
+        "coordinates": [-112.115763, 36.058973],
+        "day": 5
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2962",
+        "description": "Joshua Tree National Park",
+        "type": "Point",
+        "coordinates": [-116.107963, 34.011646],
+        "day": 9
+      }
+    ]
   },
   {
     "releaseYear": 2014,
@@ -67,7 +191,36 @@
     "description": "In 2028 Detroit, when Alex Murphy (Joel Kinnaman) - a loving husband, father and good cop - is critically injured in the line of duty, the multinational conglomerate OmniCorp sees their chance for a part-man, part-robot police officer.",
     "duration": 110,
     "actors": ["Joel Kinnaman", "Douglas Urbanski", "Abbie Cornish"],
-    "price": 40
+    "price": 40,
+    "theaterLocation": {
+      "description": "NYC, USA",
+      "type": "Point",
+      "coordinates": [-73.985141, 40.75894],
+      "address": "Manhattan, NY 10036, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c2960",
+        "description": "New York",
+        "type": "Point",
+        "coordinates": [-73.967696, 40.781821],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c295f",
+        "description": "Los Angeles",
+        "type": "Point",
+        "coordinates": [-118.324396, 34.097984],
+        "day": 3
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c295e",
+        "description": "San Francisco",
+        "type": "Point",
+        "coordinates": [-122.408865, 37.787825],
+        "day": 5
+      }
+    ]
   },
   {
     "releaseYear": 2014,
@@ -81,7 +234,50 @@
     "description": "Steve Rogers struggles to embrace his role in the modern world and teams up with Natasha Romanoff, aka Black Widow, to battle a powerful yet shadowy enemy in present-day Washington, D.C.",
     "duration": 135,
     "actors": ["Chris Evans", "Frank Grillo", "Sebastian Stan"],
-    "price": 57
+    "price": 57,
+    "theaterLocation": {
+      "description": "California, USA",
+      "type": "Point",
+      "coordinates": [-118.803461, 34.006072],
+      "address": "29130 Cliffside Dr, Malibu, CA 90265, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c296b",
+        "description": "Point Dume Beach",
+        "type": "Point",
+        "coordinates": [-118.809361, 34.003098],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c296a",
+        "description": "Venice Skate Park",
+        "type": "Point",
+        "coordinates": [-118.47549, 33.987367],
+        "day": 4
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2969",
+        "description": "San Diego Skydive",
+        "type": "Point",
+        "coordinates": [-116.830104, 33.022843],
+        "day": 6
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2968",
+        "description": "Kern River Rafting",
+        "type": "Point",
+        "coordinates": [-118.4547, 35.710359],
+        "day": 7
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2967",
+        "description": "Yosemite National Park",
+        "type": "Point",
+        "coordinates": [-119.600492, 37.742371],
+        "day": 10
+      }
+    ]
   },
   {
     "releaseYear": 2013,
@@ -95,7 +291,36 @@
     "description": "Based on the autobiographical novel, the tempestuous 6-year relationship between Liberace and his (much younger) lover, Scott Thorson, is recounted.",
     "duration": 118,
     "actors": ["Matt Damon", "Scott Bakula", "Eric Zuckerman"],
-    "price": 59
+    "price": 59,
+    "theaterLocation": {
+      "description": "Utah, USA",
+      "type": "Point",
+      "coordinates": [-109.55099, 37.283469],
+      "address": "Bluff, UT 84512, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c2973",
+        "description": "Natural Bridges National Monument",
+        "type": "Point",
+        "coordinates": [-109.99953, 37.629017],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2972",
+        "description": "Horseshoe Bend",
+        "type": "Point",
+        "coordinates": [-111.50954, 36.883269],
+        "day": 3
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c2971",
+        "description": "Death Valley National Park",
+        "type": "Point",
+        "coordinates": [-117.07399, 36.501435],
+        "day": 6
+      }
+    ]
   },
   {
     "releaseYear": 2012,
@@ -109,6 +334,35 @@
     "description": "Eight years on, a new evil rises from where the Batman and Commissioner Gordon tried to bury it, causing the Batman to resurface and fight to protect Gotham City... the very city which brands him an enemy.",
     "duration": 165,
     "actors": ["Christian Bale", "Tom Hardy", "Anne Hathaway"],
-    "price": 57
+    "price": 57,
+    "theaterLocation": {
+      "description": "California, USA",
+      "type": "Point",
+      "coordinates": [-122.29286, 38.294065],
+      "address": "560 Jefferson St, Napa, CA 94559, USA"
+    },
+    "otherLocations": [
+      {
+        "_id": "5c88fa8cf4afda39709c296f",
+        "description": "Beringer Vineyards",
+        "type": "Point",
+        "coordinates": [-122.479887, 38.510312],
+        "day": 1
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c296e",
+        "description": "Clos Pegase Winery & Tasting Room",
+        "type": "Point",
+        "coordinates": [-122.582948, 38.585707],
+        "day": 3
+      },
+      {
+        "_id": "5c88fa8cf4afda39709c296d",
+        "description": "Raymond Vineyard and Cellar",
+        "type": "Point",
+        "coordinates": [-122.434697, 38.482181],
+        "day": 5
+      }
+    ]
   }
 ]

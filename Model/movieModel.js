@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const validator = require('validator')
+const User = require('../Model/userModel')
 
 const movieSchema = new mongoose.Schema(
   {
@@ -49,19 +50,19 @@ const movieSchema = new mongoose.Schema(
     genres: {
       type: [String],
       required: [true, 'Genres is required field!!'],
-      enum: {
-        values: [
-          'Action',
-          'Adventure',
-          'Sci-Fi',
-          'Thriller',
-          'Crime',
-          'Drama',
-          'Comedy',
-          'Romance',
-        ],
-        message: "The genre you entered dosen't exist!!",
-      },
+      // enum: {
+      //   values: [
+      //     'Action',
+      //     'Adventure',
+      //     'Sci-Fi',
+      //     'Thriller',
+      //     'Crime',
+      //     'Drama',
+      //     'Comedy',
+      //     'Romance',
+      //   ],
+      //   message: "The genre you entered dosen't exist!!",
+      // },
     },
     directors: {
       type: [String],
@@ -82,6 +83,35 @@ const movieSchema = new mongoose.Schema(
     createdBy: {
       type: String,
     },
+    theaterLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    otherLocations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    authorisedUsers: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: {
@@ -93,12 +123,28 @@ const movieSchema = new mongoose.Schema(
   }
 )
 
+// movieSchema.pre('save', async function (next) {
+//   const authUsersPromises = this.authorisedUsers.map(
+//     async (id) => await User.findById(id)
+//   )
+//   this.authorisedUsers = await Promise.all(authUsersPromises)
+//   next()
+// })
+
 movieSchema.virtual('durationInHours').get(function () {
   return `${(this.duration / 60).toFixed(1)} Hrs`
 })
 
 movieSchema.pre('save', function (next) {
   this.createdBy = 'Anuragh'
+  next()
+})
+
+movieSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'authorisedUsers',
+    select: '-__v',
+  })
   next()
 })
 
@@ -112,7 +158,7 @@ movieSchema.post('save', function (doc, next) {
 })
 
 movieSchema.pre(/^find/, function (next) {
-  this.find({ releaseDate: { $lte: Date.now() } })
+  //this.find({ releaseDate: { $gte: Date.now() } })
   next()
 })
 

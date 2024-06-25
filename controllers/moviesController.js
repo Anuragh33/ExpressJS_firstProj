@@ -83,9 +83,6 @@ exports.deleteMovieById = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     message: 'The movie is deleted',
-    data: {
-      deleteMovie,
-    },
   })
 })
 
