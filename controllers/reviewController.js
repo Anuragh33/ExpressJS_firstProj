@@ -3,6 +3,9 @@ const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
 const customError = require('../Utilities/customError')
 
 exports.createReview = asyncErrorHandler(async (req, res, next) => {
+  if (!req.body.movie) req.body.movie = req.params.movieId
+  req.body.user = req.user.id
+
   if (!req.body.review || !req.body.rating) {
     return next(new customError('Rating and Review is needed!!', 400))
   }
@@ -12,6 +15,7 @@ exports.createReview = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'Success',
     message: 'The review has been posted successfully!!! ',
+    review,
   })
 })
 

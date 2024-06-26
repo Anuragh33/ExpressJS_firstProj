@@ -131,6 +131,12 @@ const movieSchema = new mongoose.Schema(
 //   next()
 // })
 
+movieSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'movie',
+  localField: '_id',
+})
+
 movieSchema.virtual('durationInHours').get(function () {
   return `${(this.duration / 60).toFixed(1)} Hrs`
 })

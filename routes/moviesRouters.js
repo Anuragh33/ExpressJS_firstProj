@@ -13,6 +13,9 @@ const {
 } = require('../controllers/moviesController')
 
 const authController = require('../controllers/authContoller')
+const reviewRouter = require('../routes/reviewRouter')
+
+router.use('/:movieId/reviews', reviewRouter)
 
 router.route('/highest-rated').get(getHighestRated, getAllMovies)
 
@@ -34,5 +37,13 @@ router
     authController.restrictRole('admin'),
     deleteMovieById
   )
+
+// router
+//   .route('/:movieId/reviews')
+//   .post(
+//     authController.protect,
+//     authController.restrictRole('user'),
+//     reviewController.createReview
+//   )
 
 module.exports = router

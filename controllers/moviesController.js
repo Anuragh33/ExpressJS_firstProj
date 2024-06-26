@@ -41,7 +41,7 @@ exports.createMovie = asyncErrorHandler(async (req, res, next) => {
 })
 
 exports.getMovieById = asyncErrorHandler(async (req, res, next) => {
-  const movieByID = await Movie.findById(req.params.id)
+  const movieByID = await Movie.findById(req.params.id).populate('reviews')
 
   if (!movieByID) {
     return next(new customError('Movie with that ID is not found!!', 404))
