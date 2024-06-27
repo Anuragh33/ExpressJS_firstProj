@@ -1,6 +1,7 @@
 const Review = require('../Model/reviewModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
 const customError = require('../Utilities/customError')
+const factoryFunc = require('./factoryFunction')
 
 exports.createReview = asyncErrorHandler(async (req, res, next) => {
   if (!req.body.movie) req.body.movie = req.params.movieId
@@ -20,7 +21,11 @@ exports.createReview = asyncErrorHandler(async (req, res, next) => {
 })
 
 exports.getAllReviews = asyncErrorHandler(async (req, res, next) => {
-  const reviews = await Review.find()
+  let filter = {}
+
+  if (req.params.movieId) filter = { movie: req.params.movieId }
+
+  const reviews = await Review.find(filter)
 
   res.status(200).json({
     status: 'Success',
@@ -30,3 +35,6 @@ exports.getAllReviews = asyncErrorHandler(async (req, res, next) => {
     },
   })
 })
+
+
+exports.

@@ -1,41 +1,34 @@
 const express = require('express')
 const router = express.Router()
 
-const {
-  getAllMovies,
-  getMovieById,
-  updateMovieById,
-  createMovie,
-  deleteMovieById,
-  getHighestRated,
-  getMovieStats,
-  getMoviesByGenre,
-} = require('../controllers/moviesController')
+const movieController = require('../controllers/moviesController')
 
 const authController = require('../controllers/authContoller')
 const reviewRouter = require('../routes/reviewRouter')
 
 router.use('/:movieId/reviews', reviewRouter)
 
-router.route('/highest-rated').get(getHighestRated, getAllMovies)
+router
+  .route('/highest-rated')
+  .get(movieController.getHighestRated, movieController.getAllMovies)
 
-router.route('/stats').get(getMovieStats)
+router.route('/stats').get(movieController.getMovieStats)
 
-router.route('/genre/:genre').get(getMoviesByGenre)
+router.route('/genre/:genre').get(movieController.getMoviesByGenre)
 
 router
   .route('/')
-  .get(authController.protect, getAllMovies)
-  .post(authController.protect, createMovie)
+  .get(authController.protect, movieController.getAllMovies)
+  .post(authController.protect, movieController.createMovie)
 
 router
   .route(`/:id`)
-  .get(authController.protect, getMovieById)
-  .patch(authController.protect, updateMovieById)
+  .get(authController.protect, movieController.getMovieById)
+  .patch(authController.protect, movieController.updateMovieById)
   .delete(
     authController.protect,
     authController.restrictRole('admin'),
-    deleteMovieById
+    movieController.deleteMovieById
   )
 
 // router

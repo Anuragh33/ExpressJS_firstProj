@@ -2,6 +2,7 @@ const User = require('../Model/userModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
 const jwt = require('jsonwebtoken')
 const customError = require('../Utilities/customError')
+const factoryFunc = require('./factoryFunction')
 
 const signToken = (id) => {
   return jwt.sign(
@@ -95,14 +96,4 @@ exports.updateUser = asyncErrorHandler(async (req, res, next) => {
   })
 })
 
-exports.deleteUser = asyncErrorHandler(async (req, res, next) => {
-  const user = await User.findByIdAndUpdate(req.user.id, {
-    active: false,
-  })
-
-  res.status(200).json({
-    status: 'Success',
-    message: 'The User deleted successfully!!',
-    user,
-  })
-})
+exports.deleteUser = factoryFunc.deleteOne(User)

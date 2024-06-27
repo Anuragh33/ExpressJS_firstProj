@@ -2,6 +2,7 @@ const Apifeatures = require('../Utilities/APIFeatures')
 const Movie = require('../Model/movieModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
 const customError = require('../Utilities/customError')
+const factoryFunc = require('./factoryFunction')
 
 exports.getHighestRated = (req, res, next) => {
   req.query.limit = '5'
@@ -73,18 +74,7 @@ exports.updateMovieById = asyncErrorHandler(async (req, res, next) => {
   })
 })
 
-exports.deleteMovieById = asyncErrorHandler(async (req, res, next) => {
-  const deleteMovie = await Movie.findByIdAndDelete(req.params.id)
-
-  if (!deleteMovie) {
-    return next(new customError('Movie with that ID is not found', 404))
-  }
-
-  res.status(200).json({
-    status: 'Success',
-    message: 'The movie is deleted',
-  })
-})
+exports.deleteMovieById = factoryFunc.deleteOne(Movie)
 
 exports.getMovieStats = asyncErrorHandler(async (req, res, next) => {
   const stats = await Movie.aggregate([
