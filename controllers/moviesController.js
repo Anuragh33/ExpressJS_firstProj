@@ -1,7 +1,5 @@
-const Apifeatures = require('../Utilities/APIFeatures')
 const Movie = require('../Model/movieModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
-const customError = require('../Utilities/customError')
 const factoryFunc = require('./factoryFunction')
 
 exports.getHighestRated = (req, res, next) => {
@@ -11,68 +9,15 @@ exports.getHighestRated = (req, res, next) => {
   next()
 }
 
-exports.getAllMovies = asyncErrorHandler(async (req, res, next) => {
-  const features = new Apifeatures(Movie.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination()
+exports.getAllMovies = factoryFunc.getAll(Movie)
 
-  let movies = await features.query
-
-  res.status(200).json({
-    status: 'Success',
-    length: movies.length,
-    data: {
-      movies,
-    },
-  })
+exports.getMovieById = factoryFunc.getOne(Movie, {
+  path: 'reviews',
 })
 
-exports.createMovie = asyncErrorHandler(async (req, res, next) => {
-  const movie = await Movie.create(req.body)
+exports.createMovie = factoryFunc.createOne(Movie)
 
-  //
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      movie,
-    },
-  })
-})
-
-exports.getMovieById = asyncErrorHandler(async (req, res, next) => {
-  const movieByID = await Movie.findById(req.params.id).populate('reviews')
-
-  if (!movieByID) {
-    return next(new customError('Movie with that ID is not found!!', 404))
-  }
-
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      movieByID,
-    },
-  })
-})
-
-exports.updateMovieById = asyncErrorHandler(async (req, res, next) => {
-  const updateMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  })
-
-  if (!updateMovie) {
-    return next(new customError('Movie with that ID is not found', 404))
-  }
-
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      updateMovie,
-    },
-  })
-})
+exports.updateMovieById = factoryFunc.updateOne(Movie)
 
 exports.deleteMovieById = factoryFunc.deleteOne(Movie)
 

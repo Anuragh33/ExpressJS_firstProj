@@ -1,20 +1,7 @@
 const User = require('../Model/userModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
-const jwt = require('jsonwebtoken')
 const customError = require('../Utilities/customError')
 const factoryFunc = require('./factoryFunction')
-
-const signToken = (id) => {
-  return jwt.sign(
-    {
-      id: id,
-    },
-    process.env.SECRET_STR,
-    {
-      expiresIn: process.env.LOGIN_EXPIRES,
-    }
-  )
-}
 
 const filterReqObject = (obj, ...fields) => {
   const newObj = {}
@@ -27,54 +14,12 @@ const filterReqObject = (obj, ...fields) => {
   return newObj
 }
 
-exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
-  // const user = await User.findById(req.user.id)
+exports.getMe = (req, res, next) => {
+  req.prams.id = req.user.id
+  next()
+}
 
-  // if (user.role === 'user')
-  //   return next(
-  //     new customError(
-  //       'You do not have privilages to view the users. Contact the admin!!'
-  //     )
-  //   )
-
-  const users = await User.find()
-
-  res.status(200).json({
-    status: 'Success',
-    totalUsers: users.length,
-    users: {
-      users,
-    },
-  })
-})
-
-exports.updatePassword = asyncErrorHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id).select('+password')
-
-  if (
-    !(await user.comparePasswordDB(req.body.currentPassword, user.password))
-  ) {
-    return next(
-      new customError('The current password provided is incorrect', 401)
-    )
-  }
-
-  user.password = req.body.password
-  user.confirmPassword = req.body.confirmPassword
-
-  await user.save()
-
-  const updatedPasswordToken = signToken(user._id)
-
-  res.status(200).json({
-    status: 'Success',
-    message: 'Password has been updated successfully!!',
-    userLogged: `The logged in user is ${user.email} with an id ${user._id}`,
-    updatedPasswordToken,
-  })
-})
-
-exports.updateUser = asyncErrorHandler(async (req, res, next) => {
+exports.updateMe = asyncErrorHandler(async (req, res, next) => {
   if (req.body.password || req.body.confirmPassword) {
     return next(
       new customError('This link used to update the user details only!!', 400)
@@ -82,7 +27,7 @@ exports.updateUser = asyncErrorHandler(async (req, res, next) => {
   }
 
   const filterObj = filterReqObject(req.body, 'email', 'name')
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filterObj, {
+  const updatedMe = await User.findByIdAndUpdate(req.user.id, filterObj, {
     runValidators: true,
     new: true,
   })
@@ -91,9 +36,11 @@ exports.updateUser = asyncErrorHandler(async (req, res, next) => {
     status: 'Success',
     message: 'User details has been updated successfully!!',
     data: {
-      user: updatedUser,
+      user: updatedMe,
     },
   })
 })
-
+exports.getAllUsers = factoryFunc.getAll(User)
+exports.updateUser = factoryFunc.updateOne(User)
 exports.deleteUser = factoryFunc.deleteOne(User)
+exports.getUser = factoryFunc.getOne(User)

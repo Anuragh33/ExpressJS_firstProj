@@ -240,3 +240,29 @@ exports.passwordReset = asyncErrorHandler(async (req, res, next) => {
     loginToken,
   })
 })
+
+exports.updatePassword = asyncErrorHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id).select('+password')
+
+  if (
+    !(await user.comparePasswordDB(req.body.currentPassword, user.password))
+  ) {
+    return next(
+      new customError('The current password provided is incorrect', 401)
+    )
+  }
+
+  user.password = req.body.password
+  user.confirmPassword = req.body.confirmPassword
+
+  await user.save()
+
+  const updatedPasswordToken = signToken(user._id)
+
+  res.status(200).json({
+    status: 'Success',
+    message: 'Password has been updated successfully!!',
+    userLogged: `The logged in user is ${user.email} with an id ${user._id}`,
+    updatedPasswordToken,
+  })
+})
