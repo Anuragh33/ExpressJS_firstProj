@@ -16,27 +16,17 @@ router.route('/stats').get(movieController.getMovieStats)
 
 router.route('/genre/:genre').get(movieController.getMoviesByGenre)
 
+router.use(authController.protect)
+
 router
   .route('/')
-  .get(authController.protect, movieController.getAllMovies)
-  .post(authController.protect, movieController.createMovie)
+  .get(movieController.getAllMovies)
+  .post(movieController.createMovie)
 
 router
   .route(`/:id`)
-  .get(authController.protect, movieController.getMovieById)
-  .patch(authController.protect, movieController.updateMovieById)
-  .delete(
-    authController.protect,
-    authController.restrictRole('admin'),
-    movieController.deleteMovieById
-  )
-
-// router
-//   .route('/:movieId/reviews')
-//   .post(
-//     authController.protect,
-//     authController.restrictRole('user'),
-//     reviewController.createReview
-//   )
+  .get(movieController.getMovieById)
+  .patch(movieController.updateMovieById)
+  .delete(authController.restrictRole('admin'), movieController.deleteMovieById)
 
 module.exports = router
