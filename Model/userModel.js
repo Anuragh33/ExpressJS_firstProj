@@ -23,7 +23,6 @@ const userScheme = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter a password to continue!!'],
     minlength: 8,
-    maxlength: 20,
     select: false,
   },
   confirmPassword: {
@@ -95,8 +94,9 @@ userScheme.methods.generateResetToken = function () {
   return resetToken
 }
 
-userScheme.pre('find', async function () {
+userScheme.pre(/^find/, async function (next) {
   this.find({ active: { $ne: false } })
+  next()
 })
 
 const User = mongoose.model('User', userScheme)

@@ -49,8 +49,7 @@ class Apifeatures {
     //   if (skip >= moviesCount)
     //     throw new Error(' There are no records to display!!')
     // }
-    console.log(this.queryStr.limit)
-    //console.log(this.queryStr)
+
     return this
   }
 }

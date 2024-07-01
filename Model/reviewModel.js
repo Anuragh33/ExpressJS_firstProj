@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Movie = require('./movieModel')
 
 const reviewSchema = mongoose.Schema(
   {
@@ -8,7 +9,7 @@ const reviewSchema = mongoose.Schema(
     },
     rating: {
       type: Number,
-      default: 1,
+
       max: 10,
       min: 1,
     },
@@ -34,21 +35,55 @@ const reviewSchema = mongoose.Schema(
   }
 )
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true })
+
 reviewSchema.pre(/^find/, function (next) {
-  this.populate(
-    // {
-    // path: 'movie',
-    // select: '-_id name',
-    // })
-
-    // .populate(
-
-    {
-      path: 'user',
-      select: 'name role',
-    }
-  )
+  this.populate({
+    path: 'user',
+    select: 'name role',
+  })
   next()
+})
+
+reviewSchema.statics.calAverageRating = async function (movieId) {
+  const stats = await this.aggregate([
+    {
+      $match: { movie: movieId },
+    },
+    {
+      $group: {
+        _id: '$movie',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ])
+
+  if (stats.length > 0) {
+    await Movie.findByIdAndUpdate(movieId, {
+      totalRatings: stats[0].nRating,
+      ratings: stats[0].avgRating,
+    })
+  } else {
+    await Movie.findByIdAndUpdate(movieId, {
+      totalRatings: 0,
+      averageRatings: 3,
+    })
+  }
+}
+
+reviewSchema.post('save', function () {
+  this.constructor.calAverageRating(this.movie)
+})
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.clone().findOne()
+
+  next()
+})
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  await this.r.constructor.calAverageRating(this.r.movie)
 })
 
 const Review = mongoose.model('Review', reviewSchema)

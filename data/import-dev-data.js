@@ -6,6 +6,8 @@ const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 
 const Movies = require('../Model/movieModel')
+const User = require('../Model/userModel')
+const Review = require('../Model/reviewModel')
 
 mongoose
   .connect(process.env.CONN_STR, { useNewUrlParser: true })
@@ -17,11 +19,15 @@ mongoose
   })
 
 const movies = JSON.parse(fs.readFileSync('./data/movies.json', 'utf-8'))
+const users = JSON.parse(fs.readFileSync('./data/users.json', 'utf-8'))
+const reviews = JSON.parse(fs.readFileSync('./data/reviews.json', 'utf-8'))
 
 const deleteMovies = async () => {
   try {
     await Movies.deleteMany()
-    console.log('The Previous data is successfully deleted!!')
+    await User.deleteMany()
+    await Review.deleteMany()
+    console.log('Previous data deleted successfully!!')
   } catch (err) {
     console.log(err.message)
   }
@@ -31,7 +37,9 @@ const deleteMovies = async () => {
 const importMovies = async () => {
   try {
     await Movies.create(movies)
-    console.log('The data is imported successfully!!')
+    await User.create(users, { validateBeforeSave: false })
+    await Review.create(reviews, { validateBeforeSave: false })
+    console.log('Data loaded successfully!!')
   } catch (err) {
     console.log(err)
   }
@@ -48,4 +56,7 @@ if (process.argv[2] === '--import') {
 // node data/import-dev-data.js --delete
 
 //To Import
+
+//Comment out the middle wear in the userModel.js and reviewModel.js before importing
+
 //  node data/import-dev-data.js --import

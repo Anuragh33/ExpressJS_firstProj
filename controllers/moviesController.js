@@ -1,5 +1,6 @@
 const Movie = require('../Model/movieModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
+const customError = require('../Utilities/customError')
 const factoryFunc = require('./factoryFunction')
 
 exports.getHighestRated = (req, res, next) => {
@@ -71,6 +72,77 @@ exports.getMoviesByGenre = asyncErrorHandler(async (req, res, next) => {
     length: moviesByGenre.length,
     data: {
       moviesByGenre,
+    },
+  })
+})
+
+///movies-within/distance/:distance/center/:latlng/unit/:unit'
+exports.getMoviesWithInDistance = asyncErrorHandler(async (req, res, next) => {
+  const { distance, latlng, unit } = req.params
+  const [lat, lng] = latlng.split(',')
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1
+
+  if (!lat || !lng) {
+    return next(
+      new customError(
+        'Please provide latitude and longitude in lat,lng format!!',
+        400
+      )
+    )
+  }
+
+  const movieTheaters = await Movie.find({
+    theaterLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+  })
+
+  res.status(200).json({
+    status: 'Success',
+    count: movieTheaters.length,
+    message: 'The Theater locations are as follows',
+    data: {
+      movieTheaters,
+    },
+  })
+})
+
+exports.getDistance = asyncErrorHandler(async (req, res, next) => {
+  const { latlng, unit } = req.params
+  const [lat, lng] = latlng.split(',')
+
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.001
+
+  if (!lat || !lng) {
+    return next(
+      new customError(
+        'Please provide latitude and longitude in lat,lng format!!',
+        400
+      )
+    )
+  }
+
+  const distance = await Movie.aggregate([
+    {
+      $geoNear: {
+        near: { type: 'Point', coordinates: [lng * 1, lat * 1] },
+        distanceField: 'distance',
+        spherical: true,
+        distanceMultiplier: multiplier,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
+      },
+    },
+  ])
+
+  res.status(200).json({
+    status: 'Success',
+    message: 'The Theater locations are with in distances from',
+    data: {
+      distance,
     },
   })
 })

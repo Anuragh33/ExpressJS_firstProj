@@ -8,10 +8,7 @@ router.use(authController.protect)
 
 router
   .route('/')
-  .get(
-    authController.restrictRole('user', 'admin'),
-    reviewController.getAllReviews
-  )
+  .get(reviewController.getAllReviews)
   .post(
     authController.restrictRole('user', 'admin'),
     reviewController.setReview,
@@ -21,6 +18,9 @@ router
 router
   .route('/:id')
   .get(reviewController.getReview)
-  .delete(authController.restrictRole('admin'), reviewController.deleteReview)
+  .delete(
+    authController.restrictRole('user', 'admin'),
+    reviewController.deleteReview
+  )
 
 module.exports = router

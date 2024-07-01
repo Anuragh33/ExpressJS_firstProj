@@ -25,6 +25,7 @@ const movieSchema = new mongoose.Schema(
     },
     ratings: {
       type: Number,
+      set: (val) => Math.round(val * 10) / 10,
       validate: {
         validator: function (value) {
           return value >= 1 && value < 10
@@ -35,6 +36,7 @@ const movieSchema = new mongoose.Schema(
     },
     totalRatings: {
       type: Number,
+      default: 0,
     },
     releaseYear: {
       type: Number,
@@ -50,19 +52,6 @@ const movieSchema = new mongoose.Schema(
     genres: {
       type: [String],
       required: [true, 'Genres is required field!!'],
-      // enum: {
-      //   values: [
-      //     'Action',
-      //     'Adventure',
-      //     'Sci-Fi',
-      //     'Thriller',
-      //     'Crime',
-      //     'Drama',
-      //     'Comedy',
-      //     'Romance',
-      //   ],
-      //   message: "The genre you entered dosen't exist!!",
-      // },
     },
     directors: {
       type: [String],
@@ -131,6 +120,10 @@ const movieSchema = new mongoose.Schema(
 //   next()
 // })
 
+movieSchema.index({ price: 1, ratings: 1 }, { unique: true })
+movieSchema.index({ slug: 1 })
+movieSchema.index({ theaterLocation: '2dsphere' })
+
 movieSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'movie',
@@ -155,7 +148,10 @@ movieSchema.pre(/^find/, function (next) {
 })
 
 movieSchema.post('save', function (doc, next) {
-  const content = `A new movie ${doc.name} is created by ${doc.createdBy} successfully \n`
+  const date = new Date()
+  const content = `A new movie ${doc.name} is created by ${
+    doc.createdBy
+  } successfully on ${date.toUTCString()} \n`
 
   fs.writeFileSync('./Log/log.txt', content, { flag: 'a' }, (err) =>
     console.log(err.message)
@@ -168,10 +164,10 @@ movieSchema.pre(/^find/, function (next) {
   next()
 })
 
-movieSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { releaseDate: { $lte: new Date() } } })
-  next()
-})
+// movieSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { releaseDate: { $lte: new Date() } } })
+//   next()
+// })
 
 const Movie = mongoose.model('Movie', movieSchema)
 
