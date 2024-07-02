@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const rateLimiter = require('express-rate-limit')
 const helmet = require('helmet')
 const sanatize = require('express-mongo-sanitize')
@@ -13,6 +14,11 @@ const userRouter = require('./routes/userRouter')
 const reviewRouter = require('./routes/reviewRouter')
 
 const app = express()
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+
+app.use(express.static(path.join(__dirname, './public')))
 
 app.use(helmet())
 
@@ -46,7 +52,16 @@ app.use(
   })
 )
 
-app.use(express.static('./public'))
+app.get('/', (req, res) => {
+  res.set(
+    'Content-Security-Policy',
+    "default-src 'self';font-src fonts.gstatic.com;style-src 'self' 'unsafe-inline' fonts.googleapis.com"
+  )
+  res.status(200).render('base', {
+    movie: 'The Dark Knight Rises',
+    user: 'Anuragh',
+  })
+})
 
 app.use('/v1/movies', moviesRouter)
 app.use('/v1/auth', authRouter)
