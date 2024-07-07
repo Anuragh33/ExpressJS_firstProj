@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const validator = require('validator')
 const User = require('../Model/userModel')
+const slugify = require('slugify')
 
 const movieSchema = new mongoose.Schema(
   {
@@ -72,6 +73,7 @@ const movieSchema = new mongoose.Schema(
     createdBy: {
       type: String,
     },
+    slug: { type: String },
     theaterLocation: {
       type: {
         type: String,

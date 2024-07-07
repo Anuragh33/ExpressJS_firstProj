@@ -20,17 +20,22 @@ const signToken = (name, email, id) => {
   )
 }
 
-const resCookie = (res, token) => {
-  const options = {
+const resCookie = (user, res, token) => {
+  //console.log(token)
+  const cookieOptions = {
     maxAge: process.env.LOGIN_EXPIRES,
-    httpOnly: true,
+    httpOnly: false,
+    sameSite: 'None',
   }
 
   if (process.env.NODE_env === 'production') {
-    options.secure = true
+    cookieOptions.secure = true
   }
 
-  res.cookie('jwt', token, options)
+  res.cookie('jwt', token, cookieOptions)
+  console.log(res.cookie)
+
+  user.password = undefined
 }
 
 /////////////////////////////////////////////////////////////
@@ -57,8 +62,7 @@ exports.signUp = asyncErrorHandler(async (req, res, next) => {
 /////////////////////////////////////////////////////////////
 
 exports.login = asyncErrorHandler(async (req, res, next) => {
-  const email = req.body.email
-  const password = req.body.password
+  const { email, password } = req.body
 
   if (!email || !password) {
     const err = new customError('Email or Password is missing!!', 400)
@@ -87,6 +91,8 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
 
   const token = signToken(user.name, user.email, user._id)
 
+  resCookie(user, res, token)
+
   res.status(200).json({
     status: 'Success',
     message: 'The User logged in successfully!!',
@@ -105,9 +111,13 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
     token = testToken.split(' ')[1]
   }
 
+  if (req.cookies.jwt) {
+    token = req.cookies.jwt
+  }
+
   if (!token) {
-    const err = new customError('Please login to proceed!!', 400)
-    return next(err)
+    // const err = new customError('Please login to proceed!!', 400)
+    return res.redirect('/')
   }
 
   const decodedToken = await util.promisify(jwt.verify)(
@@ -140,6 +150,38 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
   req.user = user
   next()
 })
+
+//////////////////////////////////////////////////////////////
+exports.isLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decodedToken = await util.promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.SECRET_STR
+      )
+
+      const user = await User.findById(decodedToken.id)
+
+      if (!user) {
+        return next()
+      }
+
+      const isPwdChanged = await user.isPasswordChanged(decodedToken.iat)
+
+      if (isPwdChanged) {
+        return next()
+      }
+
+      res.locals.user = user
+
+      return next()
+    } catch (err) {
+      console.log(err)
+      return next()
+    }
+  }
+  next()
+}
 
 /////////////////////////////////////////////////////////////
 

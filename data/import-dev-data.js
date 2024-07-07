@@ -53,7 +53,7 @@ if (process.argv[2] === '--import') {
 }
 
 //To Delete
-// node data/import-dev-data.js --delete
+//   node data/import-dev-data.js --delete
 
 //To Import
 

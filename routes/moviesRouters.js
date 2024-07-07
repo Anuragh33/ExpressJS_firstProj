@@ -21,6 +21,8 @@ router
 
 router.route('/distance/:latlng/unit/:unit').get(movieController.getDistance)
 
+//router.route('/').get(movieController.getAllMovies)
+
 router.use(authController.protect)
 
 router

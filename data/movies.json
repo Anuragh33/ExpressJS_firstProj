@@ -1,6 +1,7 @@
 [
   {
     "name": "Riddick",
+    "slug": "riddick",
     "description": "Left for dead on a sun-scorched planet, Riddick finds himself up against an alien race of predators. Activating an emergency beacon alerts two ships: one carrying a new breed of mercenary, the other captained by a man from Riddick's past.",
     "duration": 119,
     "ratings": 6.8,
@@ -52,6 +53,7 @@
   {
     "releaseYear": 2013,
     "name": "We're the Millers",
+    "slug": "we-are-the-millers",
     "directors": ["Rawson Marshall Thurber"],
     "releaseDate": "2013-08-03T00:00:00Z",
     "ratings": 7.2,
@@ -96,6 +98,7 @@
   {
     "releaseYear": 2014,
     "name": "Divergent",
+    "slug": "divergent",
     "directors": ["Neil Burger"],
     "releaseDate": "2014-03-20T00:00:00Z",
     "ratings": 6.4,
@@ -132,6 +135,7 @@
   {
     "releaseYear": 2013,
     "name": "Elysium",
+    "slug": "elysium",
     "directors": ["Neill Blomkamp"],
     "releaseDate": "2013-08-07T00:00:00Z",
     "ratings": 7,
@@ -182,6 +186,7 @@
   {
     "releaseYear": 2014,
     "name": "RoboCop",
+    "slug": "robo-cop",
     "directors": ["Jose Padilha"],
     "releaseDate": "2014-01-30T00:00:00Z",
     "ratings": 7.7,
@@ -225,6 +230,7 @@
   {
     "releaseYear": 2014,
     "name": "Captain America: The Winter Soldier",
+    "slug": "captain-america-the-winter-soldier",
     "directors": ["Anthony Russo", "Joe Russo"],
     "releaseDate": "2014-04-02T00:00:00Z",
     "ratings": 7.9,
@@ -282,6 +288,7 @@
   {
     "releaseYear": 2013,
     "name": "Behind the Candelabra",
+    "slug": "behind-the-candelabra",
     "directors": ["Steven Soderbergh"],
     "releaseDate": "2013-05-21T00:00:00Z",
     "ratings": 7,
@@ -325,6 +332,7 @@
   {
     "releaseYear": 2012,
     "name": "The Dark Knight Rises",
+    "slug": "the-dark-knight-rises",
     "directors": ["Christopher Nolan"],
     "releaseDate": "2012-07-16T00:00:00Z",
     "ratings": 8.6,
