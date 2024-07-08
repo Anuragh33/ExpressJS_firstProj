@@ -12,6 +12,8 @@ export const login = async (email, password) => {
       },
     })
 
+    console.log(res.data)
+
     if (res.data.status === 'Success') {
       showAlert('success', 'Logged In Successfully')
       window.setTimeout(() => {
@@ -19,7 +21,21 @@ export const login = async (email, password) => {
       }, 1000)
     }
   } catch (err) {
-    // console.log(err.response)
     showAlert('error', err.message)
+  }
+}
+
+export const logout = async () => {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: 'http://localhost:3000/v1/auth/logout',
+    })
+    console.log(res.data)
+
+    if (res.data.status === 'Success') location.reload()
+  } catch (err) {
+    console.log(err.response)
+    showAlert('error', `Error in logging out ${err.message}!!`)
   }
 }

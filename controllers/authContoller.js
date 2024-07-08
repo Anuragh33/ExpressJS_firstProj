@@ -23,8 +23,7 @@ const signToken = (name, email, id) => {
 const resCookie = (user, res, token) => {
   //console.log(token)
   const cookieOptions = {
-    maxAge: process.env.LOGIN_EXPIRES,
-    httpOnly: false,
+    httpOnly: true,
     sameSite: 'None',
   }
 
@@ -100,6 +99,12 @@ exports.login = asyncErrorHandler(async (req, res, next) => {
     token,
   })
 })
+
+//////////////////////////////////////////////////////////
+exports.logout = (req, res) => {
+  res.clearCookie('jwt')
+  res.status(200).json({ status: 'Success' })
+}
 
 ///////////////////////////////////////////////////////
 
