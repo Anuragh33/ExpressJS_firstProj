@@ -12457,7 +12457,7 @@ var updateData = exports.updateData = /*#__PURE__*/function () {
         case 4:
           res = _context.sent;
           if (res.data.status === 'Success') {
-            (0, _alerts.showAlert)('success', 'Details updated successfully');
+            (0, _alerts.showAlert)('success', "".concat(type, " updated successfully"));
           }
           _context.next = 11;
           break;
@@ -12627,12 +12627,11 @@ if (loginBtn) loginBtn.addEventListener('submit', function (e) {
 if (logoutBtn) logoutBtn.addEventListener('click', _login.logout);
 if (updateForm) updateForm.addEventListener('submit', function (e) {
   e.preventDefault();
-  var email = document.getElementById('email').value;
-  var name = document.getElementById('name').value;
-  (0, _updateData.updateData)({
-    name: name,
-    email: email
-  }, 'data');
+  var form = new FormData();
+  form.append('name', document.getElementById('name').value);
+  form.append('email', document.getElementById('email').value);
+  form.append('photo', document.getElementById('photo').files[0]);
+  (0, _updateData.updateData)(form, 'data');
 });
 if (userPasswordForm) userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {

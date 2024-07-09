@@ -15,7 +15,7 @@ export const updateData = async (data, type) => {
     })
 
     if (res.data.status === 'Success') {
-      showAlert('success', 'Details updated successfully')
+      showAlert('success', `${type} updated successfully`)
     }
   } catch (err) {
     showAlert('error', err.message)

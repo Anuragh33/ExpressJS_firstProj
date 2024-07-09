@@ -264,7 +264,7 @@ exports.passwordReset = asyncErrorHandler(async (req, res, next) => {
 
   if (!user) {
     const err = new customError(
-      'The password reset token wasinvalid or  expired. Please try again!!',
+      'The password reset token was invalid or  expired. Please try again!!',
       400
     )
     return next(err)
