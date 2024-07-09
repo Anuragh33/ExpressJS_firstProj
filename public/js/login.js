@@ -12,8 +12,6 @@ export const login = async (email, password) => {
       },
     })
 
-    console.log(res.data)
-
     if (res.data.status === 'Success') {
       showAlert('success', 'Logged In Successfully')
       window.setTimeout(() => {

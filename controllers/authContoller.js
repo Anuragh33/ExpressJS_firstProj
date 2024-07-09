@@ -153,6 +153,7 @@ exports.protect = asyncErrorHandler(async (req, res, next) => {
   }
 
   req.user = user
+  res.locals.user = user
   next()
 })
 
@@ -289,7 +290,7 @@ exports.passwordReset = asyncErrorHandler(async (req, res, next) => {
 })
 
 exports.updatePassword = asyncErrorHandler(async (req, res, next) => {
-  const user = await User.findById(req.user._id).select('+password')
+  const user = await User.findById(req.user.id).select('+password')
 
   if (
     !(await user.comparePasswordDB(req.body.currentPassword, user.password))
@@ -304,12 +305,18 @@ exports.updatePassword = asyncErrorHandler(async (req, res, next) => {
 
   await user.save()
 
-  const updatedPasswordToken = signToken(user._id)
+  const { name, email, id } = user
+
+  console.log(id)
+
+  const updatedPasswordToken = signToken(name, email, id)
+
+  resCookie(user, res, updatedPasswordToken)
 
   res.status(200).json({
     status: 'Success',
     message: 'Password has been updated successfully!!',
-    userLogged: `The logged in user is ${user.email} with an id ${user._id}`,
+    userLogged: `The logged in user is ${user.email} with an id ${user.id}`,
     updatedPasswordToken,
   })
 })

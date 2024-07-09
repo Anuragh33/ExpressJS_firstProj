@@ -1,5 +1,7 @@
 const Movie = require('../Model/movieModel')
+const User = require('../Model/userModel')
 const asyncErrorHandler = require('../Utilities/asyncErrorHandler')
+const customError = require('../Utilities/customError')
 
 let policy = (res) => {
   return res.set(
@@ -15,6 +17,10 @@ exports.getMovie = asyncErrorHandler(async (req, res, next) => {
     path: 'reviews',
     select: 'review rating user',
   })
+
+  if (!movie) {
+    return next(new customError('Invalid movie name. Try Again!!', 404))
+  }
 
   res.status(200).render('movie', {
     movie,
@@ -44,4 +50,30 @@ exports.login = asyncErrorHandler(async (req, res) => {
     .render('login', {
       title: 'Login to you account!!',
     })
+})
+
+exports.getMe = (req, res, next) => {
+  policy(res)
+  res.status(200).render('account', {
+    title: 'Your Account',
+  })
+}
+
+exports.updateUserData = asyncErrorHandler(async (req, res, next) => {
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+
+  res.status(200).render('account', {
+    title: 'Your Account',
+    user: updatedUser,
+  })
 })

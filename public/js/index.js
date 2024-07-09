@@ -1,8 +1,11 @@
 import '@babel/polyfill'
 import { login, logout } from './login'
+import { updateData } from './updateData'
 
 const loginBtn = document.querySelector('.form')
 const logoutBtn = document.querySelector('.nav__el--logout')
+const updateForm = document.querySelector('.form-user-data')
+const userPasswordForm = document.querySelector('.form-user-password')
 
 if (loginBtn)
   loginBtn.addEventListener('submit', (e) => {
@@ -13,3 +16,27 @@ if (loginBtn)
   })
 
 if (logoutBtn) logoutBtn.addEventListener('click', logout)
+
+if (updateForm)
+  updateForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const email = document.getElementById('email').value
+    const name = document.getElementById('name').value
+    updateData({ name, email }, 'data')
+  })
+
+if (userPasswordForm)
+  userPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    document.querySelector('.btn--save-password').textContent = 'Updating...'
+
+    const passwordCurrent = document.getElementById('password-current').value
+    const password = document.getElementById('password').value
+    const passwordConfirm = document.getElementById('password-confirm').value
+    await updateData({ passwordCurrent, password, passwordConfirm }, 'password')
+
+    document.querySelector('.btn--save-password').textContent = 'Save password'
+    document.getElementById('password-current').value = ''
+    document.getElementById('password').value = ''
+    document.getElementById('password-confirm').value = ''
+  })

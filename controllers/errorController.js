@@ -1,13 +1,19 @@
 const customError = require('../Utilities/customError')
 
-const devErrors = (res, err) => {
-  res.status(err.statusCode).json({
-    status: err.statusCode,
-    errorName: err.name,
-    message: err.message,
-    //stackTrace: err.stack,
-    err,
-  })
+const devErrors = (req, res, err) => {
+  if (req.originalUrl.startsWith('/v1'))
+    res.status(err.statusCode).json({
+      status: err.statusCode,
+      errorName: err.name,
+      message: err.message,
+      stackTrace: err.stack,
+    })
+  else {
+    res.status(err.statusCode).render('error', {
+      title: 'Somethings is Wrong!!',
+      msg: err.message,
+    })
+  }
 }
 ///////////////////////////////////////////////////////////
 
@@ -41,16 +47,27 @@ const JsonWebTokenErrorHandler = (err) => {
   return new customError('messsage', 401)
 }
 
-const prodErrors = (res, err) => {
-  err.isOperational
-    ? res.status(err.statusCode).json({
-        status: err.statusCode,
-        message: err.message,
-      })
-    : res.status(500).jsob({
-        status: 'Error',
-        message: 'Someting is wrong!! Please try again.',
-      })
+const prodErrors = (req, res, err) => {
+  if (req.originalUrl.startsWith('/v1'))
+    err.isOperational
+      ? res.status(err.statusCode).json({
+          status: err.statusCode,
+          message: err.message,
+        })
+      : res.status(500).jsob({
+          status: 'Error',
+          message: 'Someting is wrong!! Please try again.',
+        })
+  else
+    err.isOperational
+      ? res.status(err.statusCode).json({
+          status: err.statusCode,
+          message: err.message,
+        })
+      : res.status(500).jsob({
+          status: 'Error',
+          msg: 'Someting is wrong!! Please try again.',
+        })
 }
 
 module.exports = (err, req, res, next) => {
@@ -58,7 +75,7 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'Error'
 
   if (process.env.NODE_ENV === 'development') {
-    devErrors(res, err)
+    devErrors(req, res, err)
   } else if (process.env.NODE_ENV === 'production') {
     err.name === 'CastError' ? (err = castErrorHandler(err)) : null
     err.code = 11000 ? (err = duplicateKeyErrorHandler(err)) : null
