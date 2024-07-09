@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const validator = require('validator')
-const User = require('../Model/userModel')
+const User = require('./userModel')
 const slugify = require('slugify')
 
 const movieSchema = new mongoose.Schema(

@@ -10,7 +10,11 @@ router.route('/me').get(userController.getMe, userController.getUser)
 
 router
   .route('/updateMe')
-  .patch(userController.userUploadPhoto, userController.updateMe)
+  .patch(
+    userController.userUploadPhoto,
+    userController.resizingPhotos,
+    userController.updateMe
+  )
 
 router.use(authController.restrictRole('admin'))
 

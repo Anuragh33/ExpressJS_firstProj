@@ -32,6 +32,10 @@ const upload = multer({
 
 exports.userUploadPhoto = upload.single('photo')
 
+exports.resizingPhotos = (req, res, next) => {
+  if (!upload) return next()
+}
+
 ///////////////////////////////////////////////////////////////
 
 const filterReqObject = (obj, ...fields) => {
@@ -58,6 +62,9 @@ exports.updateMe = asyncErrorHandler(async (req, res, next) => {
   }
 
   const filterObj = filterReqObject(req.body, 'email', 'name')
+
+  if (req.file) filterObj.photo = req.file.filename
+
   const updatedMe = await User.findByIdAndUpdate(req.user.id, filterObj, {
     runValidators: true,
     new: true,
